@@ -1,4 +1,4 @@
-```yaml
+
 name: Build and Deploy to Private EC2
 
 on:
@@ -75,4 +75,3 @@ jobs:
               "sudo systemctl restart private-ec2-app"
             ]' \
             --region "$AWS_REGION"
-```
