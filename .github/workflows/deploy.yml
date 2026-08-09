@@ -1,4 +1,4 @@
-name: Build and Deploy to Private EC2
+name: Build and Deploy to Private Ec2
 
 on:
   push:
