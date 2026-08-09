@@ -12,7 +12,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   S3_BUCKET: padma-private-ec2-artifacts-975050346434
-  EC2_INSTANCE_ID: i-xxxxxxxxxxxxxxxxx
+  EC2_INSTANCE_ID: i-005400bdd6b3e0d39
 
 jobs:
 
