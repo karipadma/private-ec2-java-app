@@ -15,9 +15,7 @@ env:
   EC2_INSTANCE_ID: i-005400bdd6b3e0d39
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -33,8 +31,7 @@ jobs:
           cache: maven
 
       - name: Build application
-        run: |
-          mvn clean package
+        run: mvn clean package
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -50,14 +47,12 @@ jobs:
 
       - name: Deploy to private EC2
         run: |
-
           aws ssm send-command \
             --instance-ids "$EC2_INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --parameters 'commands=[
-              "aws s3 cp s3://padma-private-ec2-artifacts-975050346434/private-ec2-app.jar /opt/private-ec2-app/app.jar",
+              "aws s3 cp s3://padma-private-ec2-artifacts-975050346434/private-ec2-app.jar /opt/task/app.jar",
               "sudo systemctl daemon-reload",
-              "sudo systemctl restart private-ec2-app",
-              "sudo systemctl status private-ec2-app --no-pager"
+              "sudo systemctl restart private-ec2-app"
             ]' \
-            --region us-east-1
+            --region "$AWS_REGION"
