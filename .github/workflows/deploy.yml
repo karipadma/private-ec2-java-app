@@ -20,11 +20,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout source code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup Java 17
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
@@ -32,17 +30,14 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # 3. Build Java application
       - name: Build application
         run: mvn clean package
 
-      # 4. Debug GitHub OIDC token
       - name: Debug OIDC
         uses: actions/github-script@v7
         with:
           script: |
             const token = await core.getIDToken('sts.amazonaws.com');
-
             const payload = JSON.parse(
               Buffer.from(token.split('.')[1], 'base64url').toString()
             );
@@ -53,26 +48,22 @@ jobs:
             console.log("repository:", payload.repository);
             console.log("ref:", payload.ref);
 
-      # 5. Assume AWS IAM role using GitHub OIDC
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::975050346434:role/GitHubActionsTerraformRole
           aws-region: us-east-1
 
-      # 6. Verify AWS authentication
       - name: Verify AWS identity
         run: |
           aws sts get-caller-identity
 
-      # 7. Upload JAR to S3
       - name: Upload JAR to S3
         run: |
           aws s3 cp \
             target/private-ec2-app-1.0.jar \
             s3://$S3_BUCKET/private-ec2-app.jar
 
-      # 8. Deploy application to private EC2 using SSM
       - name: Deploy to private EC2
         run: |
           aws ssm send-command \
